@@ -9,7 +9,9 @@
  * then tells the trip module to add the attraction.
  */
 
-$(function(){
+
+
+$(function(){  // only runs once document is ready, so tripModule should be avail.
 
   // jQuery selects
   var $optionsPanel = $('#options-panel');
@@ -18,9 +20,15 @@ $(function(){
   var $activitySelect = $optionsPanel.find('#activity-choices');
 
   // make all the option tags (second arg of `forEach` is a `this` binding)
-  hotels.forEach(makeOption, $hotelSelect);
-  restaurants.forEach(makeOption, $restaurantSelect);
-  activities.forEach(makeOption, $activitySelect);
+  dataModule.hotelsPromise.then(function (hotels) {
+    hotels.forEach(makeOption, $hotelSelect);
+  });
+  dataModule.restaurantsPromise.then(function (restaurants) {
+    restaurants.forEach(makeOption, $restaurantSelect);
+  });
+  dataModule.activitiesPromise.then(function (activities) {
+    activities.forEach(makeOption, $activitySelect);
+  });
 
   function makeOption (databaseAttraction) {
     var $option = $('<option></option>') // makes a new option tag
