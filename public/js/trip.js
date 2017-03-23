@@ -48,22 +48,48 @@ var tripModule = (function () {
   function addDay () {
     if (this && this.blur) this.blur(); // removes focus box from buttons
     var newDay = dayModule.create({ number: days.length + 1 }); // dayModule
+
+    console.log(newDay.number);
+
+    // save new day to database:
+    $.ajax({
+      type: 'POST',
+      url: '/api/days/add',
+      data: { number: +newDay.number }
+    })
+    .then(function(response) {
+      console.log('got here!');
+    })
+    .catch(console.error);
+
     days.push(newDay);
     if (days.length === 1) {
       currentDay = newDay;
     }
+    console.log('currentDay', currentDay);
+    console.log('newDay', newDay);
     switchTo(newDay);
+  }
 
-  // save new dey to database:
-  $.ajax({
-    method: 'POST',
-    url: 'api/days/add',
-    data: {newDay}
-  })
-  .then(function(response) {
-    console.log(response);
-  })
-  .catch(next);
+  function loadDay () {
+
+    /*
+    1. check to see whether there's days in your database
+    2. if so, populate with your existing days
+    3. if not, addDay
+    */
+
+    $.get('/api/days')
+    .then(function(returnedDays) {
+      if (returnedDays) {
+        returnedDays.forEach(day => {
+          return dayModule.create(day);
+        })
+      } else {
+        addDay();
+      }
+    })
+  }
 
   function deleteCurrentDay () {
     // prevent deleting last day
@@ -85,7 +111,7 @@ var tripModule = (function () {
   var publicAPI = {
 
     load: function () {
-      $(addDay);
+      $(loadDay);
     },
 
     switchTo: switchTo,
