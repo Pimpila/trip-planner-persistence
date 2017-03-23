@@ -49,6 +49,12 @@ router.get('days/:id', function (req, res, next) {
   .catch (next);
 })
 
+router.post('/days/add', function(req, res, next) {
+  Day.create(req.data)
+  .then(function(createdDay) {
+    res.json(createDay);
+  })
+})
 
 router.post('/days/:id/restaurants', function (req, res, next) {
   var specificDay = req.params.id;

@@ -53,7 +53,17 @@ var tripModule = (function () {
       currentDay = newDay;
     }
     switchTo(newDay);
-  }
+
+  // save new dey to database:
+  $.ajax({
+    method: 'POST',
+    url: 'api/days/add',
+    data: {newDay}
+  })
+  .then(function(response) {
+    console.log(response);
+  })
+  .catch(next);
 
   function deleteCurrentDay () {
     // prevent deleting last day
